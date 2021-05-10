@@ -1,6 +1,10 @@
+#%%
+
 import time
 import requests
 import sys
+import json
+import pandas as pd
 
 
 def chartTimeToInteger(chartTime):
@@ -37,8 +41,11 @@ def getCurrentPrice():
     return res.json()
 
 
-
+# リストの作成
+df = pd.DataFrame(data=getCandleDate("BTCUSDT", "4h", 5), columns=['OpenTime', 'Open', 'High' , 'Low' , 'Close' , 'Volume' , 'CloseTime'])
 print("開始します")
 
+print(df)
 # print(getCandleDate("BTCUSDT", "4h", 5))
-print(getCurrentPrice())
+# print(getCurrentPrice())
+# %%
