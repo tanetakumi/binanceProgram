@@ -1,4 +1,4 @@
-#%%
+
 
 import time
 import requests
@@ -42,10 +42,24 @@ def getCurrentPrice():
 
 
 # リストの作成
-df = pd.DataFrame(data=getCandleDate("BTCUSDT", "4h", 5), columns=['OpenTime', 'Open', 'High' , 'Low' , 'Close' , 'Volume' , 'CloseTime'])
+df = pd.DataFrame(data=getCandleDate("BTCUSDT", "4h", 15), columns=['OpenTime', 'Open', 'High' , 'Low' , 'Close' , 'Volume' , 'CloseTime' ,'A','B','C','D','E'])
+
+
+df.drop(columns=['A','B','C','D','E'], axis=1, inplace=True)
+
+df['OpenTime'] = (df['OpenTime']/1000).astype('int64')
+df['OpenTime'] = pd.to_datetime(df['OpenTime'],unit='s')
+
+df['CloseTime'] = (df['CloseTime']/1000).astype('int64')
+df['CloseTime'] = pd.to_datetime(df['CloseTime'],unit='s')
+
+df['Open'] = df['Open'].astype(float, errors = 'raise')
+
+
+
 print("開始します")
 
+print(df.dtypes)
 print(df)
 # print(getCandleDate("BTCUSDT", "4h", 5))
-# print(getCurrentPrice())
-# %%
+# print(getCurrentPrice()
