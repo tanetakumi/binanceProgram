@@ -1,7 +1,7 @@
 import time
 import requests
 import sys
-#タイムスタンプの取得
+
 
 def chartTimeToInteger(chartTime):
     if chartTime == "1m":
@@ -20,7 +20,7 @@ def chartTimeToInteger(chartTime):
         return 0
 
 
-def getCandleDate(symbol,num,chartTime):
+def getCandleDate(symbol,chartTime,num):
     chartTimeNum = chartTimeToInteger(chartTime)
     if chartTimeNum == 0:
         print("時間足入力エラー[1m,5m,15m,1h,4h,1d]")
@@ -36,7 +36,9 @@ def getCurrentPrice():
     res = requests.get("https://api.binance.com/api/v1/ticker/allPrices")
     return res.json()
 
+
+
 print("開始します")
 
-# print(getCandleDate("BTCUSDT", 5, "4h"))
+# print(getCandleDate("BTCUSDT", "4h", 5))
 print(getCurrentPrice())
