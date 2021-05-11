@@ -3,7 +3,7 @@ import requests
 import sys
 import json
 import pandas as pd
-
+import talib
 
 def chartTimeToInteger(chartTime):
     if chartTime == "1m":
@@ -42,14 +42,14 @@ def getCandleData(symbol,chartTime,num):
     df['OpenTime'] = pd.to_datetime(df['OpenTime'],unit='s')
 
     # Objectをfloatに変換
-    df['Open'] = df['Open'].astype(float, errors = 'raise')
+    df['Open']  = df['Open'].astype(float, errors = 'raise')
     df['Close'] = df['Close'].astype(float, errors = 'raise')
-    df['High'] = df['High'].astype(float, errors = 'raise')
-    df['Low'] = df['Low'].astype(float, errors = 'raise')
+    df['High']  = df['High'].astype(float, errors = 'raise')
+    df['Low']   = df['Low'].astype(float, errors = 'raise')
     return df
 
 
-def getCurrentPrice():
+def getCurrentPrices():
     res = requests.get("https://api.binance.com/api/v3/ticker/price")
     # DataFrameの作成
     df = pd.read_json(json.dumps(res.json()))
@@ -59,12 +59,34 @@ def getCurrentPrice():
     # print(df.dtypes)
     return df
 
-def getCurrentPrices():
+
+def rsi(df,period):
+    if not 'Close' in df.columns:
+        print("RSIパラメーターエラー")
+        sys.exit()
+    print(df)
+    close = df['Close']
+    diff = close.diff()
+    diff = diff[1:]
+
+    up, down = diff.copy(), diff.copy()
+    up[up < 0] = 0
+    down[down > 0] = 0
+    print(diff)
+    print("=========")
+    print(up)
+    print("=========")
+    print(down)
+    # print(len(df))
+    # if len(df) < period
+
+def test():
     res = requests.get("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=4h")
     # DataFrameの作成
     df = pd.read_json(json.dumps(res.json()))
     # print(df.dtypes)
     return df
+
 # calculate RSI
 #               100
 # RSI = 100 - --------
@@ -74,7 +96,13 @@ def getCurrentPrices():
 
 # データセットから終値のみ切り出して差分を計算
 
-print(getCandleData("BTCUSDT","4h",10))
+dataFrame = getCandleData("BTCUSDT","1h",300)
+# dataFrame = getCurrentPrices()
+
+vRsi = talib.RSI(dataFrame['Close'],14)
+
+print(vRsi)
+
 """
 
 df = getCandleDate("BTCUSDT","1h",15)
