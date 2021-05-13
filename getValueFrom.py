@@ -4,6 +4,7 @@ import sys
 import json
 import pandas as pd
 import talib
+import os
 
 def chartTimeToInteger(chartTime):
     if chartTime == "1m":
@@ -59,26 +60,27 @@ def getCurrentPrices():
     # print(df.dtypes)
     return df
 
+def getBrands():
+    res = requests.get("https://api.binance.com/api/v3/ticker/price")
+    # DataFrameの作成
+    df = pd.read_json(json.dumps(res.json()))
+    df = df[df['symbol'].str.contains('USDT')]
+    df.drop(columns='price', axis=1, inplace=True)
+    # print(df.columns)
+    df.reset_index(drop=True ,inplace = True)
+    # print(df.dtypes)
+    return df
 
-def rsi(df,period):
-    if not 'Close' in df.columns:
-        print("RSIパラメーターエラー")
-        sys.exit()
-    print(df)
-    close = df['Close']
-    diff = close.diff()
-    diff = diff[1:]
+def csvFolder():
+    path = "./csv"
+    if not os.path.isdir(path):
+        os.mkdir(path)
+        print("csv folder not exist")
+    else:
+        print("csv folder exist")
+# def saveAsCSV(df):
 
-    up, down = diff.copy(), diff.copy()
-    up[up < 0] = 0
-    down[down > 0] = 0
-    print(diff)
-    print("=========")
-    print(up)
-    print("=========")
-    print(down)
-    # print(len(df))
-    # if len(df) < period
+
 
 def test():
     res = requests.get("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=4h")
@@ -93,15 +95,28 @@ def test():
 #              1 + RS
 # def rsi(df):
     
+csvFolder()
 
 # データセットから終値のみ切り出して差分を計算
 
-dataFrame = getCandleData("BTCUSDT","1h",300)
+# dataFrame = getCandleData("BTCUSDT","1h",300)
 # dataFrame = getCurrentPrices()
+# print(getBrands())
+brands = getBrands()
+# print(brands.iat[2,0])
+print(type(len(brands)))
+print(len(brands))
+num = len(brands)
+for i in range(num):
+    
+    print(i, "  " + brands.iat[i,0])
 
-vRsi = talib.RSI(dataFrame['Close'],14)
+# path = os.getcwd()
+# print(path)
 
-print(vRsi)
+# vRsi = talib.RSI(dataFrame['Close'],14)
+
+# print(vRsi)
 
 """
 
