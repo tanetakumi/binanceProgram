@@ -60,16 +60,16 @@ def getCurrentPrices():
     # print(df.dtypes)
     return df
 
-def getBrands():
+def getBrands() -> list:
     res = requests.get("https://api.binance.com/api/v3/ticker/price")
     # DataFrameの作成
     df = pd.read_json(json.dumps(res.json()))
     df = df[df['symbol'].str.contains('USDT')]
-    df.drop(columns='price', axis=1, inplace=True)
+    # df.drop(columns='price', axis=1, inplace=True)
     # print(df.columns)
     df.reset_index(drop=True ,inplace = True)
     # print(df.dtypes)
-    return df
+    return df['symbol'].tolist()
 
 def csvFolder():
     path = "./csv"
@@ -104,12 +104,15 @@ csvFolder()
 # print(getBrands())
 brands = getBrands()
 # print(brands.iat[2,0])
+"""
 print(type(len(brands)))
 print(len(brands))
 num = len(brands)
 for i in range(num):
-    
     print(i, "  " + brands.iat[i,0])
+"""
+
+print(brands)
 
 # path = os.getcwd()
 # print(path)
